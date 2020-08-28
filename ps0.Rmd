@@ -115,18 +115,22 @@ ggplot(data = dino_data, mapping = aes(x = x, y = y)) +
 
 Calculate the correlation coefficient between `x` vs. `y` for the `star` dataset. You can (and should) reuse code we introduced above, just replace the dataset name with the desired dataset. How does this value compare to the correlation coefficient from the `dino` dataset?
 
-> RESPONSE: 
+> RESPONSE: The correlation coefficient is about -0.062. There seems to be a weak relationship between x and y. This correlation coefficient is very similar to the one in the `dino` dataset.
 
 ```{r}
-
+star_data <- datasaurus_dozen %>%
+  filter(dataset == "star")
+star_data %>%
+  summarize(r = cor(x, y))
 ```
 
 Then, plot `y` versus `x` for the `star` dataset.  Does the plot look the same as the plot of the `dino` data?
 
-> RESPONSE:
+> RESPONSE: The plot does not look the same. This plot looks like a star.
 
 ```{r}
-
+ggplot(data = star_data, mapping = aes(x = x, y = y)) +
+  geom_point()
 ```
 
 
