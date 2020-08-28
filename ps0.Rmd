@@ -185,7 +185,7 @@ datasaurus_dozen %>%
 
 What do you notice?  Is the correlation coefficiant an appropriate summary for any of these datasets?  Why or why not?
 
-> RESPONSE:
+> RESPONSE: The plots of all the datasets make a shape. The correlation coefficients for each of these datasets are about -0.06, indicating a weak relationship. Since the datasets don't seem to have much of a relationship, as the points seem chosen specifically to make a shape, I would say that the correlation coefficients seem appropriate.
 
 
 *You should pause again, commit changes with the commit message "Added answer for Ex 5", and push.*
