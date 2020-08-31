@@ -90,7 +90,7 @@ g + geom_text(aes(label = country, color = net_users), size = 3) +
 ### a.
 Consider Figure 3.7 in Section 3.2.1.  What does `reorder(drg, mean_charge)` do?  Recreate the plot, but use `x = drg` instead of `x = reorder(drg, mean_charge)`.  What happens?
 
-> ANSWER: 
+> ANSWER: `reorder(drg, mean_charge)` sorts the medical procedures in order of their average charges, from least expensive to most expensive. By using `x = drg` instead, the plot becomes out of order of expenses, and instead is in order of the DRG number.
 
 ```{r}
 data(MedicareCharges)
@@ -99,7 +99,11 @@ ChargesNJ <- MedicareCharges %>%
   filter(stateProvider == "NJ")
 
 # create the plot object
-p <- 
+p <- ggplot(data = ChargesNJ,
+           aes(x = drg, y = mean_charge)) +
+  geom_bar(fill = "gray", stat = "identity") +
+  ylab("Statewide Average Charges ($)") + xlab("Medical Procedure (DRG)") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
   
   
 # print the plot
@@ -109,10 +113,14 @@ p
 ### b.
 Replace `x = drg` with `x = reorder(drg, mean_charge)`, but also remove the `theme()` line.  Now what happens?  What was the purpose of the `theme()` line?  Hint: You may need to knit the document and look at the pdf to better observe what's happening.
 
-> ANSWER:  
+> ANSWER: `theme(axis.text.x = element_text(angle = 90, hjust = 1))` rotates the DRG numbers text on the x-axis by 90 degrees so that they are read sideways. This makes it so that the numbers don't overlap each other, improving readability of the graph.
 
 ```{r}
-
+p <- ggplot(data = ChargesNJ,
+           aes(x = reorder(drg, mean_charge), y = mean_charge)) +
+  geom_bar(fill = "gray", stat = "identity") +
+  ylab("Statewide Average Charges ($)") + xlab("Medical Procedure (DRG)")
+p
 ```
 
 
