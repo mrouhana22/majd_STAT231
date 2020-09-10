@@ -109,7 +109,7 @@ Let's start by creating a scatterplot with log(spending) on the x-axis and log(e
 
 First, sketch the scatterplot (don't worry about the actual x-y relationship, but be sure to identify the different variables that will be needed to create the plot).  What variables do you need in the dataset in order to create the scatterplot in ggplot?  What will each observation (row) in the dataset represent?
 
-> RESPONSE: We need the variables of spending that include the total costs for each year and the employer coverage variable for each year. The rows in the dataset represent each state in the US.
+> RESPONSE: We need to include the total spending costs variable and the employer coverage variable. The rows in the dataset represent a state and year in the US. For example, Alabama 2013.
 
 
 What are some of the steps that will need to be taken to get the data in that form?  
@@ -121,8 +121,30 @@ What are some of the steps that will need to be taken to get the data in that fo
 Now implement those steps in R, tidying the dataset for plotting.  After the final step, use the `clean_names()` function from the `janitor` package to clean the variable names.  Then, create the scatterplot.
 
 ```{r}
+# creating final coverage dataset
+coverage4 <- coverage3 %>%
+  select(Location, "2013" = "2013__Employer", "2014" = "2014__Employer") %>%
+  gather(key = "Year", value = "Employer", "2013", "2014")
 
+# creating final spending dataset
+spending4 <- spending3 %>%
+  select(Location, "2013" = "2013__Total", "2014" = "2014__Total") %>%
+  gather(key = "Year", value = "Spending", "2013", "2014")
 
+covSpend <- merge(coverage4, spending4)
+
+# plot the data
+ggplot(data = covSpend
+       , mapping = aes(x = Spending, y = Employer, color = Year)) +
+    geom_point() +
+    geom_smooth(method = "loess", se = FALSE) +
+    labs(
+      title = "Total Spending Costs vs Employer Coverage",
+      subtitle = "2013-2014",
+      y = "Employer Coverage",
+      x = "Total Spending Costs",
+      color = "Year"
+    )
 ```
 
 
