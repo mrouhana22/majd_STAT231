@@ -44,7 +44,7 @@ name_choices
 ui <- fluidPage(
    
    # Application title
-   titlePanel("This is the title panel"),
+   titlePanel("Baby Names per Year"),
    
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
@@ -53,12 +53,12 @@ ui <- fluidPage(
         selectInput(inputId = "nm", 
                     label = "Name:",
                     choices = name_choices, 
-                    selected = "Katharine"),
+                    selected = "Majd"),
         # Choose Sex
         radioButtons(inputId = "sx", 
                     label = "Sex:",
                     choices = c("M", "F"), 
-                    selected = "F")
+                    selected = "M")
       ),
       
       # Show a plot of the generated distribution
