@@ -1,0 +1,12 @@
+name: Lab04b-shiny-candyrankings
+title: Lab04b-shiny-candyrankings
+username:
+account: mrouhana22
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2841665
+bundleId: 3644783
+url: https://mrouhana22.shinyapps.io/Lab04b-shiny-candyrankings/
+when: 1600456250.61381
+asMultiple: FALSE
+asStatic: FALSE
