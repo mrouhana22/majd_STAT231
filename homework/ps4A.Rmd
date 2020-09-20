@@ -1,6 +1,6 @@
 ---
 title: "STAT 231: Problem Set 4A"
-author: "Solutions"
+author: "Majd Rouhana"
 date: "due by 5 PM on Monday, September 21"
 output: pdf_document
 ---
@@ -46,18 +46,24 @@ Check the permissions for the Wikipedia page using the code below. Uncomment the
 
 ```{r}
 # you may need to install the robotstext package if you're on your machine and haven't used it before
-#library(robotstxt)
-#paths_allowed("https://en.wikipedia.org/wiki/Mile_run_world_record_progression")
+library(robotstxt)
+paths_allowed("https://en.wikipedia.org/wiki/Mile_run_world_record_progression")
 ```
 
 
 ### b.
 Now, follow the code in the textbook to scrape the tables from the Wikipedia page on "Mile run world record progression" (e.g., pages 118-120).  Use `length(tables)` to identify how many tables are in the object you created called `tables`.  How many tables are there? (Note: the Wikipedia page has been updated since the first edition of the textbook was printed, so the number should be different than that in the textbook!)
 
-> ANSWER: 
+> ANSWER: There are 12 tables.
 
 ```{r}
-
+library(rvest)
+library(methods)
+url <- "http://en.wikipedia.org/wiki/Mile_run_world_record_progression"
+tables <- url %>%
+  read_html() %>%
+  html_nodes("table")
+length(tables)
 ```
 
 
@@ -66,10 +72,11 @@ Next, look at the Wikipedia page: https://en.wikipedia.org/wiki/Mile_run_world_r
 
 Suppose we want to work in R with this "Women Indoor IAAF era" table.  From your `tables` object created in part b, create a dataframe called `women_indoor` that includes this "Women Indoor IAAF era" table.  You can use the same code as used in the textbook to create `Table3` and `Table4`, except you'll need to update the number within the double brackets to correspond to the correct table.  You'll likely need to look at a number of different tables in the `tables` object before finding which one corresponds to the "Women Indoor IAAF" table.  Print the table.  Who holds the indoor one-mile world record for IAAF women, and what was her time?
 
-> ANSWER: 
+> ANSWER: Genzebe Dibaba holds the indoor one-mile world record for IAAF women with a time of 4:13.31.
 
 ```{r}
-
+women_indoor <- html_table(tables[[10]])
+women_indoor
 ```
 
 #### d.
@@ -81,9 +88,14 @@ Lastly:
 
 Is the fastest record from an indoor or outdoor event?
 
-> ANSWER: 
+> ANSWER: The fastest world record is 4:12.33 by Sifan Hassan. The record is from an outdoor event.
 
 ```{r}
-
+women_outdoor <- html_table(tables[[8]])
+women_outdoor <- mutate(women_outdoor, Type = "Outdoor")
+women_indoor <- mutate(women_indoor, Type = "Indoor", Auto = NA)
+women <- bind_rows(women_indoor, women_outdoor) %>%
+  arrange(Time)
+women
 ```
 
