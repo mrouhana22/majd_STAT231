@@ -63,7 +63,7 @@ Check out [this Wikipedia page](https://en.wikipedia.org/wiki/List_of_Emily_Dick
 
 Click on the first five or so poems in the table (which should take you to a webpage that contains the text of the poem).  What do you notice about the URL for the page that contains the text to the poems?  Can you identify a pattern in the URLs?
 
-> ANSWER:
+> ANSWER: It starts with `https://en.wikisource.org/wiki/` followed by the title of the poem separated by underscores.
 
 
 # Web scrape a table
@@ -71,13 +71,20 @@ Click on the first five or so poems in the table (which should take you to a web
 Next, web scrape the table from the Wikipedia page [List of Emily Dickinson poems](https://en.wikipedia.org/wiki/List_of_Emily_Dickinson_poems) using the `read_html()`, `html_nodes("table")`, and `html_table()` functions (e.g., as done in PS4A).
 
 ```{r}
-
+url <- "https://en.wikipedia.org/wiki/List_of_Emily_Dickinson_poems"
+dickinson <- url %>%
+  read_html() %>%
+  html_nodes("table")
+dickinson <- html_table(dickinson[[1]])
+dickinson
 ```
 
 Can you think of a way to create a new variable which contains the URL to the page that holds the poem's text?  Think about the pattern you identified above.  Note that it may not capture all poem pages exactly, but try to create a variable that captures the general pattern(s) you identified.  (Hint: the `str_replace_all` and `paste`/`paste0` functions may be useful here.)
 
 ```{r}
-
+as.data.frame(dickinson)
+dickinson <- mutate(dickinson, URL = paste0("https://en.wikisource.org/wiki/",
+                                            str_replace_all(dickinson[, 1], " ", "_")))
 ```
 
 *This is a good place to pause, commit changes with the commit message "Added answer for scraping a table", and push.*
