@@ -1,0 +1,88 @@
+---
+title: "Calendar Project"
+author: "Majd Rouhana"
+date: "9/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(ical)
+library(ggplot2)
+library(ggformula)
+library(stringr)
+library(anytime)
+```
+```{r}
+path <- "/home/class22/mrouhana22/git/majd_STAT231/projects"
+filename <- "STAT231_c_pl4hgkq7kd4cehd0u83k85aja4@group.calendar.google.com.ics"
+
+my_calendar0 <- ical_parse_df(file = paste0(path,"/",filename)) %>%
+  mutate(start_datetime = with_tz(start, tzone = "America/New_York")
+    , end_datetime = with_tz(end, tzone = "America/New_York")
+    , length_hour = end_datetime - start_datetime
+    , date = floor_date(start_datetime, unit = "day")
+    , day = weekdays(as.Date(date))
+    , start_time = strftime(start, format="%H:%M:%S"))
+```
+```{r}
+my_calendar0 %>%
+  group_by(summary, length_hour) %>%
+  summarize(count = n())
+
+my_calendar0 %>%
+  summarize(tot_hrs = as.numeric(sum(length_hour)))
+
+sleepCalendar <- my_calendar0 %>%
+  filter(summary == "Sleep") %>%
+  group_by(day) %>%
+  summarize(meanSlp = round(mean(length_hour), digits = 2))
+
+ggplot(data = sleepCalendar, aes(x = day, y = meanSlp, fill = day)) + geom_bar(stat = "identity")
+
+eatCalendar <- my_calendar0 %>%
+  mutate(eat = ifelse((summary == "Coffee" | summary == "Lunch" | summary == "Dinner" | summary == "Snack"),
+                      "Eating", "Not Eating"),
+         numDay = ifelse((day == "Friday" | day == "Saturday"), 3, 2)) %>%
+  filter(eat == "Eating") %>%
+  subset(select = c(eat, day, numDay)) %>%
+  group_by(day) %>%
+  summarize(meanEat = round(n() / numDay, digits = 2)) %>%
+  arrange(meanEat) %>%
+  slice(from = 1, to = 12)
+
+ggplot(data = eatCalendar, aes(x = day, y = meanEat, fill = day)) + geom_bar(stat = "identity")
+
+musicCalendar <- my_calendar0 %>%
+  mutate(numDay = ifelse((day == "Friday" | day == "Saturday"), 3, 2)) %>%
+  filter(summary == "Music") %>%
+  group_by(day) %>%
+  summarize(meanPractice = round(n() / numDay))
+
+tableCalendar <- merge(sleepCalendar, eatCalendar)
+
+knitr::kable(tableCalendar, col.names = c("Day of the Week",
+             "Average Hours of Sleep", "Average Number of Times I Ate"))
+
+
+
+sleepCalendar2 <- my_calendar0 %>%
+  filter(summary == "Sleep") %>%
+  mutate(sleepHr = length_hour)
+
+eatCalendar2 <- my_calendar0 %>%
+  mutate(eat = ifelse((summary == "Coffee" | summary == "Lunch" |
+                       summary == "Dinner" | summary == "Snack"),
+                       "Eating", "Not Eating"),
+         numDay = ifelse((Day == "Friday" | Day == "Saturday"), 3, 2)) %>%
+  filter(eat == "Eating") %>%
+  group_by(Day) %>%
+  summarize(count = n())
+
+mergedCalendar2 <- merge(sleepCalendar2, eatCalendar2)
+```
+In the thirteen days logged so far, I slept and ate lunch and dinner every day (thankfully). On average, I slept about 7.6 hours a night. On five of those days I drank coffee, while on six of those days I ate a snack. I also practiced music on eight of the thirteen days.
+
+I am looking to see if I can create a table that has sleep on the left side, with the other summaries on the top. Maybe I can use the `gather()` and `spread()` functions to achieve this. I want to see the number of times I drink coffee, eat lunch, dinner or a snack, or play my instrument depending on the number of hours I sleep. For example, do I practice more often on days I sleep more? Do I consume calories more on days I sleep less?
