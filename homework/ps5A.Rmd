@@ -1,6 +1,6 @@
 ---
 title: "STAT 231: Problem Set 5A"
-author: "YOUR NAME HERE"
+author: "Majd Rouhana"
 date: "due by 5 PM on Monday, September 28"
 output: pdf_document
 ---
@@ -51,7 +51,7 @@ In Section 19.1.1, the `grep` and `grepl` functions are introduced for detecting
 
 (Yes, the textbook explains the differences in these commands/calls to these commands, but it can be helpful if you run the lines yourself as well to be sure they work as you'd expect and to inspect the results.) 
 
-> ANSWER: 
+> ANSWER: In the first case, `grepl()` searches the first six indices and returns `TRUE` if the index contains " MACBETH" and `FALSE` if it doesn't (it returns six `FALSE`s because " MACBETH" doesn't occur until the 228th index). In the second case, we add `value = TRUE` to `grep()`, so it returns the first six strings in the `macbeth` dataset that include " MACBETH". In the third case, `grep()` returns the first six indices of the `macbeth` dataset where the string " MACBETH" was found.
 
 ```{r}
 # defining "macbeth" object
@@ -80,10 +80,11 @@ Section 19.1.1 also introduces regular expressions.  Why do the two lines below 
 
 (Yes, the textbook explains the differences, but it can be helpful if you run the lines yourself as well to be sure they work as you'd expect and to inspect the results.) 
 
-> ANSWER:  
+> ANSWER: The first line returns the first six strings where "MACBETH." is found. The second line returns the first six strings where "MACBETH" is found (not necessarily with a period). This is because `.` is a metacharacter that matches any character. If we want to specify to search for `.` as well, we must escape it with a backslash (as shown in the first line).
 
 ```{r}
-
+head(grep("MACBETH\\.", macbeth, value = TRUE))
+head(grep("MACBETH.", macbeth, value = TRUE))
 ```
 
 ### c. 
@@ -96,7 +97,7 @@ The `stringr` package from the `tidyverse` collection of packages, has functions
 
 Uncomment and run the code below to ensure the same results are returned for each different pair (at least for the first six records).  In words, explain what overall pattern is being searched for (i.e., what does the pattern "MAC[B-Z]" indicate?)?
 
-> ANSWER: 
+> ANSWER: The same results are returned for each different pair. The pattern "MAC[B-Z]" indicates that R is searching for any lines that contain "MAC" followed by any capital letter other than "A".
 
 ```{r}
 # (1) `str_detect(string=, pattern=)` is equivalent to `grepl(pattern=, x=)`
