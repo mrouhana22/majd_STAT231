@@ -1,16 +1,14 @@
 ---
 title: "Lab 7 - Network Graphs" 
-author: "Your Name Here"
+author: "Majd Rouhana"
 date: "October 1, 2020"
 always_allow_html: yes
 output:
+  pdf_document:
+    toc: yes 
   html_document:
     toc: yes
     toc_float: yes
-  pdf_document:
-    toc: yes 
-editor_options: 
-  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -43,7 +41,7 @@ library(igraph)
 The following dataset contains migration counts for decades between 1960 and 2000 between the origin (`origincode`) and destination (`destcode`) countries given in the data. 
 
 ```{r}
-path_in <- "C:/Users/kcorreia/Dropbox (Amherst College)/Teaching/Fall 2020/Stat231/R Labs/data"
+path_in <- "/home/class22/mrouhana22/git/majd_STAT231/labs"
 MigrationFlows <- read_csv(paste0(path_in,"/MigrationFlows.csv"))
 
 head(MigrationFlows, n=10)
@@ -59,7 +57,7 @@ We are going to look at the migration flows of females in 2000.  First, we do (v
 
 How many rows are in this dataset?
 
-> ANSWER: 
+> ANSWER: 13,805 rows.
 
 ```{r}
 MigrationFlowsF <- MigrationFlows %>%
@@ -69,7 +67,7 @@ MigrationFlowsF <- MigrationFlows %>%
 
 Now, this dataframe can be used to create a directional network object with edges indicating migration from the origin county to a destination country for the migration network of females in 2000.  How many nodes are in this network? How many edges?
 
-> ANSWER:   
+> ANSWER: 226 and 13805
 
 ```{r}
 # graph_from_data_frame is from the igraph package
@@ -147,13 +145,19 @@ Create a similar visualization but just for the countries in the vector `eastEur
 MigrationEastEurp <- MigrationFlowsF %>%
   filter(destcode %in% eastEurope & origincode %in% eastEurope)
 
+mig_easteurp <- ggnetwork(MigrationEastEurp)
+
+ggplot(data = mig_easteurp, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_edges(arrow=arrow(type="closed", length=unit(6,"pt")), color = "lightgray") +
+  geom_nodes() +
+  theme_blank()
 ```
 
 The plot of this network is much clearer than a plot of the entire network. We can see that some countries like Russia and Belarus are not popular migration destinations while other countries, like Poland and Hungary are (though we can't see the numbers migrating into these countries from this graph).
 
 Recalling that `Y2000` represents female migration in 2000, is this an edge or vertex attribute?
 
-> ANSWER: 
+> ANSWER: edge
 
 Let's modify the graph so that edge width is a function of migration flow size. In `ggplot` we can do this using the `size` option in `geom_edges()`.  (Notice that the `ggnetwork` data frame will contain the edge variables).  
 
@@ -187,11 +191,11 @@ ggplot(data = ggnetwork(mig_easteurp)
 
 Which do you think is the more effective visual cue in this case?
 
-> ANSWER:  
+> ANSWER: Color, because it's easier to tell between different colors than different sizes.
 
 Might the color scheme in the plot below be more effective?
 
-> ANSWER:
+> ANSWER: Yes, if the colors were more distinct. (Rainbow)
 
 ```{r}
 ggplot(data = ggnetwork(mig_easteurp)
@@ -254,7 +258,7 @@ We have a dataset on character interactions in the novel.  Two characters are co
 
 Active recall (text as data!): Suppose, instead of the (formatted) data below, we had the entire text of the novel.  List some of the steps (in English or pseudocode) that would need to be taken to wrangle the data into the form below?  
 
-> ANSWER:  
+> ANSWER: Check sentences to see if they have two names, and verbs that imply interaction between them. For example, "Aemon speaks to Grenn." We can count the occurrences of this happening.
 
 ```{r}
 got <- read_csv(paste0(path_in,"/stormofswords.csv"))
@@ -269,9 +273,9 @@ head(got)
 
 ```{r}
 # create as network object
-
+got <- ggnetwork(got)
 # identify number of nodes
-
+V(got)
 ```
 
 
