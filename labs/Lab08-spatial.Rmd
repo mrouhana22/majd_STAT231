@@ -187,7 +187,7 @@ First, we load the data and conduct a little data wrangling to get a dataset wit
 
 ```{r}
 # load chronicle data from July 2020
-path_in <- "C:/Users/kcorreia/Dropbox (Amherst College)/Teaching/Fall 2020/Stat231/R Labs/data"
+path_in <- "/home/class22/mrouhana22/git/majd_STAT231/labs"
 
 college_plans0 <- read_csv(paste0(path_in, "/chronicle_plans.csv"))
 
@@ -415,8 +415,23 @@ Code for each is given below.  JUST CHOOSE ONE to focus on.  If you post your im
 #gapminder <- gapminder::gapminder
 
 # example of dataset with state information from 2013-2014
-#library(fivethirtyeight)
-#hate_crimes <- fivethirtyeight::hate_crimes
+library(fivethirtyeight)
+hate_crimes <- fivethirtyeight::hate_crimes
+
+usMap <- merge(college_plans_map, hate_crimes) %>%
+  select(state, long, lat, share_non_white, group) %>%
+  distinct()
+
+ggplot(usMap, aes(x = long, y = lat, group = group
+                      , fill = share_non_white)) +
+  geom_polygon(color = "white") +
+  theme_void() +
+  coord_fixed(ratio = 1.3) +
+  labs(title = "Share of each state's population that is not white, 2015"
+       , subtitle = "Majd Rouhana"
+       , caption = "* States in gray have no data"
+       , fill = "") +
+  scale_fill_viridis(option = "magma", direction = -1) 
 
 # example of another dataset with state information from 1977 
 # from the datasets package loaded above
