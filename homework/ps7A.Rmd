@@ -1,6 +1,6 @@
 ---
 title: 'STAT 231: Problem Set 7A'
-author: "YOUR NAME HERE"
+author: "Majd Rouhana"
 date: "due by 5 PM on Monday, October 26"
 output:
   pdf_document: default
@@ -46,11 +46,11 @@ In the textbook, the authors state, "Common sense is a good starting point for e
 
 (1a) Assuming the numbers reported in Figure 6.1 are correct (truthful), do you think Figure 6.1 is an *unethical* representation of the data presented?  Why or why not?
 
-> ANSWER: 
+> ANSWER: I do think that Figure 6.1 is an unethical representation of the data presented. It is intentionally misleading in order to try and trick others into supporting an agenda. This is because the y-axis is flipped; thus, it appears that gun deaths decreased after the 'Stand Your Ground' law was passed, when in reality, it actually increased. By misleading by going against the standard convention, Figure 6.1 is intentionally spreading misinformation to support a political view; this is unethical, and the assessment is neither neutral nor unemotional.
 
 (1b) Pulling from the examples in the textbook, provide one example of a more nuanced ethical situation (one that you perhaps found surprising or hadn't considered before).
 
-> ANSWER:
+> ANSWER: Vioxx is a drug that was pulled from the market in September 2004 due to evidence that the drug increases the risk of MI. Vioxx was approved in May 1999 by the FDA, but shortly after its approval it was found that Vioxx has a much higher rate of MI than a standard treatment. One could say that it's unethical that Vioxx wasn't withdrawn once this was found, and was only withdrawn when many people (88,000) had gotten heart attacks. However, the researchers had a theory that the higher rate of MI was due to "an aspect of the study protocol that excluded subjects who were being treated with aspirin to reduce the risk of heart attacks," and not Vioxx itself. These researchers were ultimately wrong. I find it interesting that people will always try to justify things to make it appear to fit the agenda they're trying to push. However, this does raise a question to me, are genuine mistakes as unethical as typical unethical situations? Overall, this situation is still unethical; professional standards must be applied in work, and can't be bended to fit an agenda or personal gain.
 
 \newpage
 # 2. Does publishing a flawed analysis raise ethical questions? 
@@ -61,5 +61,5 @@ After reading Section 6.4.1 ("Applying the precepts") for the "Reproducible spre
 
 In 4-6 sentences, respond to those questions and explain your response.   
 
-> ANSWER:
+> ANSWER: I think publishing a flawed analysis does raise ethical questions. Flaws could be done on purpose, or even done due to intentionally using an unreliable program (such as Excel in the example). Also, I think that before reporting an analysis of data to the public, the work must be double-checked to make sure that it is free of errors. Failing to do so means intentionally risking that the spread of misinformation, which is unethical itself. I think that publishing a flawed analysis could happen to anyone, but I think that the severity of how "unethical" it is does vary between those who publish the data. Someone who only dabbles in data science is much more likely to make mistakes or not know about the most reliable programs, so I think that mistakes can be forgiven more. Those very experienced, like a trained data scientist, are much more skilled and know to be more careful with their data analysis. While I think both professionals and novices to data science are being in unethical in publishing flawed analyses, I think that professionals in data science need to be held more accountable for being unethical.
 
