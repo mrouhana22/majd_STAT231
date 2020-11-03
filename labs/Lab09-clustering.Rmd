@@ -1,6 +1,6 @@
 ---
 title: "Stat231: Lab 9 - Unsupervised Learning" 
-author: "Your Name Here"
+author: "Majd Rouhana"
 date: "November 3, 2020"
 always_allow_html: yes
 output:
@@ -31,7 +31,7 @@ knitr::opts_chunk$set(eval = TRUE
 Let's begin with a simple example of clustering some colleges and universities based on characteristics of an incoming class of first years.  To simplify our look at this data, we will only look at a random sample of schools in Massachusetts, and we will focus on SAT scores for right now.
 
 ```{r}
-colleges <- read_csv("data/colleges_subset.csv")
+colleges <- read_csv("/home/class22/mrouhana22/git/majd_STAT231/labs/colleges_subset.csv")
 
 dim(colleges)
 head(colleges)
@@ -288,7 +288,7 @@ You're given a dataset with information on 8,950 credit card holders, with the f
 - `TENURE`: Tenure of credit card service for user
 
 ```{r}
-cc <- read_csv("data/CC GENERAL.csv") 
+cc <- read_csv("/home/class22/mrouhana22/git/majd_STAT231/labs/CC GENERAL.csv") 
 
 glimpse(cc)
 summary(cc)
@@ -298,23 +298,29 @@ summary(cc)
 
 1. Apply k-means clustering to identify 3 clusters.  Don't forget to remove any rows with missing values, and to standardize the variables first.  How many customers are in each cluster?  
 
-> ANSWER: 
+> ANSWER: There are 2211, 129 and 6296 in clusters 1, 2 and 3, respectively.
 
 ```{r}
-
+set.seed(255)
+cc_std <- cc %>%
+  na.omit() %>%
+  select(-CUST_ID) %>%
+  mutate_if(is.numeric, funs(`std`=scale(.) %>% as.vector()))
+km_out_lab <- kmeans(cc_std, centers = 3, nstart = 20)
+km_out_lab$size
 ```
 
 2. Computer the centroids for each cluster.  Can you identify any distinguishing characteristics about the clusters from these centroid values? 
 
-> ANSWER:  
+> ANSWER: The second cluster typically has much higher values than the first or third clusters.
 
 ```{r}
-
+km_out_lab$centers
 ```
 
 3. In 1-3 sentences, explain how you would expect the results to be different had you forgotten to standardize the variables prior to clustering.
 
-> ANSWER:  
+> ANSWER: Without standardization, the values differ widely. With standardization, they are closer together.
 
 4. Identify some primary defining characteristics of each of the three clusters.  Come up with a short name for each cluster based on their defining characteristics. 
 
@@ -323,7 +329,9 @@ Note:  There are so many variables that using `ggpairs` to visualize them all at
 > ANSWER:
 
 ```{r}
-
+ggplot(data = cc_std, aes(x = BALANCE_std, y = TENURE_std)) + 
+  geom_point(alpha = 0.5) +
+  geom_point(data = as.data.frame(km_out_lab$centers), shape = "X", size = 3)
 
 ```
 
