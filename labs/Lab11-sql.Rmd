@@ -1,0 +1,197 @@
+---
+title: "Lab11-SQL"
+subtitle: "WAI Database"
+date: "`r Sys.Date()`"
+always_allow_html: yes
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+
+library(tidyverse)
+```
+
+## Connect to database
+
+You probably will need to install the `RMySQL` library before loading it below.
+
+Researchers at Smith College aimed to develop wideband acoustic immittance (WAI) measures as a noninvasive auditory diagnostic tool (e.g. for hearing loss).  WAI refers to a collection of measurements that includes absorbance, power, reflectance, impedence and related quatities.  As part of the project, they have developed the world's only online WAI database that collates data from different studies on this topic.  We can connect to that database with the following code:  
+
+```{r}
+library(RMySQL)
+con <- dbConnect(MySQL(), host = "scidb.smith.edu"
+                , user = "waiuser", password = "smith_waiDB"
+                , dbname="wai")
+```
+
+Since a single server can support many databases, each containing many tables, with each table having a variety of columns, it's easy to get lost when you're working with databases.  There are some commands to help figure out what's available.
+
+What tables are included in `con`?
+
+```{r}
+dbGetQuery(con, "SHOW TABLES")
+```
+
+What is in `PI_Info` table?
+
+```{r}
+dbGetQuery(con, "EXPLAIN PI_Info")
+```
+
+View the first five observations of the `PI_Info` table:
+
+```{r}
+dbGetQuery(con, "SELECT * 
+                 FROM PI_Info
+                 LIMIT 0,5")
+```
+
+How many observations are in the `PI_Info` table?
+
+```{r}
+dbGetQuery(con, "SELECT COUNT(*)
+                 FROM PI_Info")
+
+# name the returned value "num_obs"
+dbGetQuery(con, "SELECT COUNT(*) as num_obs
+                 FROM PI_Info")
+```
+
+Your turn!  What type of information is in the other two tables?  How many observations are in the other two tables?
+
+> ANSWER: 
+
+```{r}
+
+```
+
+## SQL tables vs R data frames
+
+The above queries are pretty simple.  But, with complex queries, it can be helpful to save the query as an object.  
+
+You can assign an object using the standard `<-` assignment operator:
+
+```{r}
+# assign object as SQL table
+PI_Info_sql <- tbl(con, "PI_Info")
+class(PI_Info_sql)
+
+# dplyr code that works with sql table
+PI_Info_sql %>%
+   filter(Year == 2010) %>%
+   select(Identifier, Year, AuthorsShortList)
+
+# code that doesn't work with sql table
+PI_Info_sql %>%
+   separate(Identifier, into=c("Author", "Year"), sep = "_"
+            , remove = FALSE) %>%
+   select(Identifier, PI_Year, PI)
+```
+
+
+SQL can be very helpful and efficient for querying huge datasets and relational databases, but its analytic capabilities are limited.  When analyzing data or creating figures, we may want to convert an SQL query or table into an R data frame.  We can do so using the `collect()` function:
+
+```{r}
+PI_Info_df <- PI_Info_sql %>%
+  collect()
+
+class(PI_Info_sql)
+class(PI_Info_df)
+
+# doesn't work
+PI_Info_sql %>%
+   separate(Identifier, into=c("Author", "Year"), sep = "_"
+            , remove = FALSE) %>%
+   select(Identifier, Author, Year)
+
+# works
+PI_Info_df %>%
+   separate(Identifier, into=c("Author", "Year"), sep = "_"
+            , remove = FALSE) %>%
+   select(Identifier, Author, Year)
+```
+
+## Where's the color-coding?!
+
+Using the `dbGetQuery` command, the SQL code is within quotation marks, making it hard to catch errors and typos as you code (since the color-coding we're accustomed to for the R code is not in effect).
+
+If you're like me and want (need!) the color-coding . . . You can write the SQL code directly into an SQL code chunk.  You need to specify the connection within the code chunk option using the `connection=` option.  
+
+Can you identify what the following code is doing?
+
+> ANSWER: 
+
+In R code chunk:
+
+```{r}
+dbGetQuery(con, "SELECT SessionTotal, COUNT(SessionTotal) as n
+                        , AVG(Sex = 'Female') as prop_fem
+                        , AVG(AgeFirstMeasurement) as avg_age
+                  FROM Subjects
+                  GROUP BY SessionTotal")
+```
+
+In SQL code chunk:
+
+```{sql, connection=con}
+SELECT SessionTotal, COUNT(SessionTotal) as n
+        , AVG(Sex = 'Female') as prop_fem
+        , AVG(AgeFirstMeasurement) as avg_age
+FROM Subjects
+GROUP BY SessionTotal
+```
+
+When to use `WHERE` vs `HAVING`?
+
+> ANSWER:  
+
+```{sql, connection=con}
+SELECT SessionTotal, COUNT(SessionTotal) as n
+       , AVG(Sex = 'Female') as prop_fem
+       , AVG(AgeFirstMeasurement) as avg_age
+FROM Subjects
+WHERE AgeFirstMeasurement < 25
+GROUP BY SessionTotal
+```
+
+```{sql, connection=con}
+SELECT SessionTotal, COUNT(SessionTotal) as n
+       , AVG(Sex = 'Female') as prop_fem
+       , AVG(AgeFirstMeasurement) as avg_age
+FROM Subjects
+GROUP BY SessionTotal
+HAVING avg_age < 25
+```
+
+Re-do the above query but include only those rows that have at least 10 subjects contributing (hint: update the `HAVING` line only). 
+
+```{sql, connection=con}
+
+
+```
+
+
+
+## Create visualization
+
+Create a figure that displays `Frequency` on the x-axis and `Absorbance` on the y-axis (both from the `Measurements` table), colored by `Ear` (left or right), for subject #3 from the Rosowski 2012 study.  Do this in two ways:
+
+(1) Use SQL code to query the appropriate table(s) (up to the point of creating the figure).  Then use `collect()` on the table immediately prior to using `ggplot` to create the figure.
+
+(2) Use `collect()` to convert the appropriate table(s) to R data frames, and then use R code to format the data to produce the figure.
+
+```{sql, connection=con}
+
+
+```
+
+```{r}
+
+```
+
